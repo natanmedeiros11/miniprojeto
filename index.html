@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<main lang="pt-br">
+<head>   
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5234/5234583.png" type="image/x-icon">
+    <title>Loja de Produtos</title>
+
+    <style type="text/css">
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+        .container-fluid {
+            background-color: #303030; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        h1 {
+            color: #ffffff; 
+        }
+
+        header {
+            background-color: rgb(77, 102, 214);
+            padding: 10px;
+            color: #f0f1f1;
+            text-align: center;
+        }
+
+        main {
+            padding: 30px 50px;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .lineImput {
+            display: grid;
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            outline: 0;
+        }
+
+        button {
+            border: 0px;
+            padding: 10px;
+            outline: 0;
+            background-color: rgb(77, 102, 214);
+            color: #fff;
+            border-radius: 3px;
+            font-weight: bold;
+            transition: all ease 0.3s;
+        }
+
+        button:hover {
+            background-color: rgb(82, 145, 124);
+        }
+
+        .content {
+            margin-top: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        table th {
+            background-color: rgb(214, 214, 214);
+        }
+
+        table th, td {
+            text-align: center;
+            padding: 1px 5px;
+        }
+
+        table td img {
+            width: 22px;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Loja</div>
+        <div class="icon-menu"><i class= "fas fa-bars"></i></div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">Sobre</a>
+            <a href="#">Contato</a>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <h1>Bem-vindo a Loja de Produtos</h1>
+    </div>
+</body>
+
+
+    <main>
+        <div class="title">
+            <h2>Produtos</h2>
+            <span>Lista de produtos </span>
+        </div>
+    </main>
+
+    <div class="card">
+        <div class="lineInput">
+            <label>Produto</label>
+            <input type="text" id="produto" placeholder="Nome do produto">
+        </div>
+
+        <div class="lineInput">
+            <label>Valor</label>
+            <input type="text" id="valor" placeholder="Valor do produto">
+        </div>
+
+        <div class="lineInput">
+            <label>Descrição</label>
+            <input type="text" id="descricao" placeholder="Descrição do produto">
+        </div>
+
+        <button onclick="produto.salvar()">Salvar</button>
+        <button onclick="produto.cancelar()">Cancelar</button>
+
+    </div>
+
+    <div class="content">
+        <table border="1">
+            <thead>
+                <th class="center">ID</th>
+                <th>Produto</th>
+                <th>Valor</th>
+                <th class="center">Descrição</th>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+    
+</main>
+<script>
+    class Produto {
+        constructor() {
+            this.id = 1;
+            this.arrayProdutos = [];
+        }
+
+        salvar() {
+            let produto = this.lerDados();
+
+            if (this.validaCampos(produto)) {
+                alert('salvar');
+                this.adicionar(produto);
+            }
+
+            this.listaTabela();
+            this.cancelar();
+
+        } 
+
+        listaTabela() {
+            let tbody = document.getElementById('tbody');
+            tbody.innerHTML = '';
+
+            for (let i = 0; i < this.arrayProdutos.length; i++) {
+                let tr = tbody.insertRow();
+                let td_id = tr.insertCell();
+                let td_produto = tr.insertCell();
+                let td_valor = tr.insertCell();
+                let td_descricao = tr.insertCell();
+                let td_acoes = tr.insertCell();
+
+                td_id.innerText = this.arrayProdutos[i].id;
+                td_produto.innerText = this.arrayProdutos[i].nomeProduto;
+                td_valor.innerText = this.arrayProdutos[i].valor;
+                td_descricao.innerText = this.arrayProdutos[i].descricao;
+
+                td_id.classList.add('center');
+
+                let imgEdit = document.createElement('img');
+                imgEdit.src = 'data:image/jpeg;base64,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';
+                imgEdit.onclick = () => this.editar(this.arrayProdutos[i].id);
+
+                let imgDelete = document.createElement('img');
+                imgDelete.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMUAAACUCAMAAAAUNB2QAAAAY1BMVEX///8AAADs7OxoaGienp7w8PDm5uZYWFi3t7f7+/vBwcFSUlIxMTGYmJiBgYE7OzvV1dXg4OBfX18gICDJyckVFRUJCQmnp6dxcXGPj49NTU3Pz88oKCiIiIhGRkaxsbF5eXn6mQDDAAADTElEQVR4nO2d65aqMAxG5SpVHBUdARXk/Z/ygAq2XTMaS0rnuL79TwohWy0oYjKbcSHE9rJqiqAly7J5z/LYMTyct2PtGkVTXk6RYNs5D8I/Bd7bzC/bvyQS58f3HTrO5cZ17j0iycwcOtZh5Dr/K6I6m0u0BFvXBi1ixAtxoz65dpjNDGeEzHr/ARKthuNX44tDwvOy2KVEMm5iPygdnjji0TO7Z+dwauRcEu3x1tlpY7vUUlk3X1VLWZarnvDK8LAdKrtVmuBb29bZBN+reSw34h0W6taFI4mokbM45G8HSBUNR/M7Vt4U4fsBIiXAgj9DCic5h9okwkWO8MWdn0EORpMzTsc+D+MppRRSowOlMrPO3PnRkFMIjOamCN1P70I+TppZ5LDgARY3YMGFbNGYhVBOOZy5KURV8DvyKSt9st4TatniyXrjvgv6c+9vMOpqT8T2ZW4ksIAFL7CABS+w+BCLDzl3X0KJlRy3Ctkp11L8Qtkz4/XPiO3Z+RnllU/449+wbRHDggwsKMCCjmJh4fdEBxY+f3xY0IEFBVjQgQUFWNCBBQVY0IEFBVjQ+XAL4fdoWwwD+pWYqB+Qf5J0bLE4rm/sNI0wvQ9od1hE1X0gzaUB1xbpT0tbhutwR81iuIN19T9ZLH+zCGEBC1jAAhawgAUsYAELWMACFrCABSxgAQtYwAIWsIAFLGABC1jAAhawgAUsYAELWHyqRXL4xaLql9eaxVC/4g/dHxVterSaHn6/XPsXk4j7ATkM7n6kAwsKsKADCwqwoAMLCrCgAwsK+Jc6HVhQcGBhoVlCfJzcwsJetnLtYGulgyO5jk3GH1+pR22tE4MorO5GKIXFuaM/UMpmLrmjKyV3LVYOVguYN7zBEyW4xVrUyqHQ82q+5jRCaN0bLDZhEHph/yDZXzkNbLvLNs9pV9g8Nrhuv6i0gvmZzTKvm9p7waHl+85OoV/arfEqir2zRYdYvdw/C5Y7MGgzwxJn29XyF1zdR55hvzPJBO+pKTp6lK/TGEc2SVsS/ajILTFRv558/ToXY4rJGsTsDdrQ0ahz6xP7gX95efozYTdxozrhJ3qDnvGEDpoGiihp6vNu+FQhQcz6vnb3WSXN8hEK/wC4GWEv6E9ijQAAAABJRU5ErkJggg==';
+                imgDelete.onclick = () => this.deletar(this.arrayProdutos[i].id);
+
+                td_acoes.appendChild(imgEdit);
+                td_acoes.appendChild(imgDelete);
+
+                console.log(this.arrayProdutos)
+            }
+        }
+
+        adicionar(produto) {
+            this.arrayProdutos.push(produto);
+            this.id++;
+        }
+
+        lerDados() {
+            let produto = {}
+
+            produto.id = this.id;
+            produto.nomeProduto = document.getElementById('produto').value;
+            produto.valor = document.getElementById('valor').value;
+            produto.descricao = document.getElementById('descricao').value;
+
+            return produto;
+        }
+
+        validaCampos(produto) {
+            let msg = '';
+
+            if (produto.nomeProduto === '') {
+                msg += '- Informe o Nome do Produto \n';
+            }
+
+            if (produto.valor === '') {
+                msg += '- Informe o Valor do Produto \n';
+            }
+
+            if (produto.descricao === '') {
+                msg += '- Informe a Descrição do Produto \n';
+            }
+
+            if (msg !== '') {
+                alert(msg);
+                return false;
+            }
+
+            return true;
+        }
+
+        cancelar() {
+            document.getElementById('produto').value = '';
+            document.getElementById('preco').value = '';
+            document.getElementById('descricao').value = '';
+            delete this.editingId;
+
+            alert('Item deletado!');
+        }
+
+        editar(id) {
+            if(confirm('Editar o produto' + id )) {
+                let tbody = document.getElementById('tbody');
+            }
+
+            for(let i = 0; i < this.arrayProdutos.length; i++) {
+                if(this.arrayProdutos[i].id == id) {
+                    this.arrayProdutos.splice(i, 1);
+                    tbody.editar(i);
+                }
+            }
+
+            console.log(this.arrayProdutos);
+        }
+
+        deletar(id) {
+            if(confirm('Deletar o produto' + id )) {
+                let tbody = document.getElementById('tbody');
+            }
+
+            for(let i = 0; i < this.arrayProdutos.length; i++) {
+                if(this.arrayProdutos[i].id == id) {
+                    this.arrayProdutos.splice(i, 1);
+                    tbody.deleteRow(i);
+                }
+            }
+
+            console.log(this.arrayProdutos);
+        }
+    }
+
+    var produto = new Produto();
+
+function main() {
+    const produto = new Produto(); 
+    let continuar = true;
+
+    do {
+        const escolha = parseInt(prompt(
+            ' Menu de Opções \n' +
+            '\n' +
+            '1. Adicionar Produto\n' +
+            '2. Visualizar Produtos\n' +
+            '3. Buscar Produto\n' +
+            '4. Atualizar Produto\n' +
+            '5. Excluir Produto\n' +
+            '6. Sair\n' +
+            '\n' +
+            'Escolha uma opção:'
+        ));
+
+        switch (escolha) {
+            case 1:
+                produto.salvar();
+                break;
+            case 2:
+                produto.listaTabela(); 
+                break;
+            case 3:
+                alert('Você não adicionou nenhum produto ainda.');
+                break;
+            case 4:
+                alert('Você não adicionou nenhum produto ainda.');
+                break;
+            case 5:
+                alert('Você não adicionou nenhum produto ainda.');
+                break;
+            case 6:
+                continuar = false; 
+                alert('Saindo...');
+                break;
+            default:
+                alert('Opção inválida. Por favor, escolha novamente.');
+        }
+    } while (continuar); 
+}
+
+window.onload = function() {
+    main();
+};
+
+</script>
+</body>
+</html>
